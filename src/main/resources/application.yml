@@ -1,0 +1,85 @@
+server:
+  port: ${APP_PORT:8080}  # можно использовать APP_PORT вместо AUTHORIZATION_SERVER_PORT
+  servlet:
+    context-path: /api  # если хотите префикс /api для всех эндпоинтов
+
+spring:
+  application:
+    name: DailyRoutineHelper
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ultra_recipe_master_database
+    username: recipe_master_user
+    password: recipe_master_2025
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: UltraRecipeMasterPool
+      auto-commit: false
+
+    # ============ JPA / HIBERNATE ============
+    jpa:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+          jdbc:
+            batch_size: 20
+          order_inserts: true
+          order_updates: true
+          default_batch_fetch_size: 20
+      hibernate:
+        ddl-auto: validate  # never use 'create-drop' or 'update' in production!
+      open-in-view: false  # важно для производительности!
+
+
+  # Настройки Jackson (JSON сериализация)
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true  # красивый JSON в ответах
+    time-zone: Europe/Moscow  # ваша таймзона
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  # Настройки MVC
+  mvc:
+    throw-exception-if-no-handler-found: true
+    problemdetails:
+      enabled: true  # стандартизированные ошибки (RFC 7807)
+
+  # Настройки для разработки
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duratin: true
+    try-it-out-enabled: true
+
+
+logging:
+  level:
+    com.ultrarecipemaster: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    org.springdoc: DEBUG  # для отладки Swagger
+
+jwt:
+  secret: 7PNoDKXDcMLBLnsQJVxnBerzfE2qIr2zevxyvhBxkrvKl/AdFecU+eHDUViC+BX9jG9s0NCikd7uK65eB2f0pg==
+  expiration: 86400000
